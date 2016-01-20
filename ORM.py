@@ -31,16 +31,21 @@ class FileManager:
 ## Employee table Manager ##
 ############################
 class Employees:
-    def to_csv(self):
-        objs = [self.EmployeeID,self.LastName,self.FirstName,self.Title,self.TitleOfCourtesy,
-                self.BirthDate,self.HireDate,self.Address,self.City,self.Region,self.PostalCode,
-                self.Country,self.HomePhone,self.Extension,self.Photo,self.Notes,self.ReportsTo,self.PhotoPath,self.Salary]
-        return "; ".join(objs)
-
     def persist(self):
         sql = "INSERT INTO employees_clone VALUES({0},'{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}',{16},'{17}',{18})".format(self.EmployeeID,self.LastName,self.FirstName,self.Title,self.TitleOfCourtesy,
               self.BirthDate,self.HireDate,self.Address,self.City,self.Region,self.PostalCode,self.Country,self.HomePhone,self.Extension,self.Photo,self.Notes,self.ReportsTo,self.PhotoPath,self.Salary)
         FileManager.execute_sql_commands(sql)
+
+    def to_csv(self):
+        result_objs = self.EmployeeID + ";" +self.LastName + ";" +self.FirstName + ";" +self.Title + ";" +self.TitleOfCourtesy + ";"\
+                    +self.BirthDate + ";" +self.HireDate + ";" +self.Address + ";" +self.City + ";" +self.Region + ";"\
+                    +self.PostalCode + ";"+self.Country + ";"+self.HomePhone + ";"+self.Extension + ";"+self.Photo + ";"\
+                    +self.Notes + ";"+self.ReportsTo + ";"+self.PhotoPath + ";"+self.Salary
+        return result_objs
+
+    def select(self):
+        sql = "SELECT * FROM employees"
+        return FileManager.execute_sql_commands()
 
     @staticmethod
     def parse(row):
@@ -67,15 +72,21 @@ class Employees:
         EMPLOYEE.Salary = parsed_row[18]
         return EMPLOYEE
 
-    def get_data(self):
+    def get_data_for_sql(self):
         datas = FileManager.get_file_rows("employees.csv")
         for i in range(1, len(datas)):
             employee = Employees.parse(datas[i])
             employee.persist()
 
+    def get_data_for_csv(self):
+        datas = FileManager.get_file_rows("employees.csv")
+        for i in range(1, len(datas)):
+            employee = Employees.parse(datas[i])
+            employee.to_csv()
+
 
 emp = Employees()
-emp.to_csv()
+emp.get_data_for_csv()
 
 
 ############################
@@ -120,11 +131,17 @@ class Customers:
         return CUSTOMERS
 
 
-    def get_data(self):
+    def get_data_for_sql(self):
         datas = FileManager.get_file_rows("customers.csv")
         for i in range(1, len(datas)):
             CUSTOMERS = Customers.parse(datas[i])
             CUSTOMERS.persist()
+
+    def get_data_for_csv(self):
+        datas = FileManager.get_file_rows("customers.csv")
+        for i in range(1, len(datas)):
+            CUSTOMERS = Customers.parse(datas[i])
+            CUSTOMERS.to_csv()
 
 # C = Customers()
 # C.get_data()
@@ -165,11 +182,17 @@ class OrderDetails:
         ORDERDETAILS.Discount = parsed_row[4]
         return ORDERDETAILS
 
-    def get_data(self):
+    def get_data_for_sql(self):
         datas = FileManager.get_file_rows("order_datails.csv")
         for i in range(1, len(datas)):
             ORDERDETAILS = OrderDetails.parse(datas[i])
             ORDERDETAILS.persist()
+
+    def get_data_for_csv(self):
+        datas = FileManager.get_file_rows("order_datails.csv")
+        for i in range(1, len(datas)):
+            ORDERDETAILS = OrderDetails.parse(datas[i])
+            ORDERDETAILS.to_csv()
 
 # ORDER_D = OrderDetails()
 # ORDER_D.to_csv()
@@ -209,8 +232,14 @@ class Orders:
         return ORDER
 
 
-    def get_data(self):
+    def get_data_for_sql(self):
         datas = FileManager.get_file_rows("orders.csv")
         for i in range(1, len(datas)):
             ORDER = Orders.parse(datas[i])
             ORDER.persist()
+
+    def get_data_for_csv(self):
+        datas = FileManager.get_file_rows("orders.csv")
+        for i in range(1, len(datas)):
+            ORDER = Orders.parse(datas[i])
+            ORDER.to_csv()
